@@ -1,0 +1,8 @@
+langgraph
+langchain
+langchain_google_genai
+python-dotenv
+pandas
+faiss-cpu
+kagglehub
+requests
