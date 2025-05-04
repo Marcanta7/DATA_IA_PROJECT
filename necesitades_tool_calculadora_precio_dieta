@@ -1,0 +1,12 @@
+'''
+1. BBDD de precios:
+-Cloud SQL (Relacional - PostgreSQL, MySQL, SQL Server)   
+Tabla de "precios_alimentos" con columnas "nombre", "precio", "unidad"./
+-Firestore (NOSQL)
+
+2. Lógica de Conversión de Unidades: Implementar la lógica para convertir las unidades de la 
+cantidad del alimento a la unidad base del precio. El ejemplo incluye conversiones 
+básicas de gramos a kg y ml a litro, asumiendo que en el diccionario de precios podrías tener claves como 
+'pechuga de pollo (kg)' o 'leche (litro)'. Necesitarás extender esta lógica según las unidades que manejes en tus dietas.
+
+
