@@ -6,3 +6,5 @@ pandas
 faiss-cpu
 kagglehub
 requests
+duckduckgo-search
+spacy
