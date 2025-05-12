@@ -42,8 +42,8 @@ def buscar_info_dietas(query: str, k: int = 5) -> str:
         response = ""
         for obj in results.objects:
             texto = obj.properties.get("text", "")
-            pagina = obj.properties.get("page_number", "?")
-            fuente = obj.properties.get("source_pdf", "desconocido")
+            pagina = obj.properties.get("page_number", 0)
+            fuente = obj.properties.get("source_pdf", "unknown")
             response += f"\n📄 *{fuente}* (página {pagina}):\n{texto.strip()}\n"
 
         return response.strip()
