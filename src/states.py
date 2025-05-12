@@ -5,9 +5,10 @@ from langgraph.graph.message import add_messages
 class DietState(MessageState):
     intolerances: List[str] = []
     forbidden_foods: List[str] = []
-    diet: List[str] = []
+    diet: Dict[int, Dict[str, Dict[str, Tuple[float, str]]]]
     budget: Optional[float] = None
-    diet: Optional[str] = None
+    
+
 
 class SearchState(TypedDict):
     query: str
