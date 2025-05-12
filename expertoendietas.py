@@ -9,7 +9,7 @@ import torch
 # Conexión y modelo cargado (igual que en tu script)
 WEAVIATE_URL = os.environ["WEAVIATE_URL"]
 WEAVIATE_API_KEY = os.environ["WEAVIATE_API_KEY"]
-CLASS_NAME = "InfoDietas"
+CLASS_NAME = "InfoDietasAplanado"
 MODEL_NAME = "intfloat/multilingual-e5-large"
 
 # --- Inicialización de cliente y modelo de embeddings ---
