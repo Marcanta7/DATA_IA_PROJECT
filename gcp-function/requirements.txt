@@ -1,7 +1,7 @@
-pandas
-google-cloud-storage
 google-cloud-bigquery
-PyYAML
-rapidfuzz
-functions-framework
-duckdb
+google-cloud-storage
+pandas
+pandas-gbq
+requests
+chardet
+pyarrow
