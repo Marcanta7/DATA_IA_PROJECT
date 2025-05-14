@@ -23,7 +23,7 @@ embedding_model = SentenceTransformer(MODEL_NAME, device=device)
 
 @tool
 def buscar_info_dietas(query: str, k: int = 5) -> str:
-    """Busca información relevante en la base de Weaviate (colección InfoDietas) a partir de una consulta."""
+    """Busca información relevante sobre dietas, almacenada en base de Weaviate (colección InfoDietas) para consultar."""
     try:
         # Incluir el prefijo si usas un modelo E5
         query_with_prefix = f"query: {query}" if "e5" in MODEL_NAME.lower() else query
