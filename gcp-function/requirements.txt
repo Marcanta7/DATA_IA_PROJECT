@@ -1,0 +1,7 @@
+google-cloud-bigquery
+google-cloud-storage
+pandas
+pandas-gbq
+requests
+chardet
+pyarrow
