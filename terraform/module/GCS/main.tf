@@ -18,4 +18,3 @@ resource "google_storage_bucket" "data_bucket" {
     }
   }
   # Add any other bucket configurations you need (e.g., logging)
-}
