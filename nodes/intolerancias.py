@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
-from nodes.states import DietState, SearchState, IntolerancesState, ForbiddenFoodsState, EliminationUpdateState
+from states import DietState, IntolerancesState, ForbiddenFoodsState, EliminationUpdateState
 from duckduckgo_search import DDGS 
 import json
-import kagglehub
-from nodes.utils import identify_removed_intolerances
+from utils import identify_removed_intolerances
+
 
 load_dotenv()
 
@@ -18,28 +18,6 @@ def load_prompt(path: str) -> dict:
         return json.load(f)
 
 prompts = load_prompt("src//prompts.json")
-
-def assistant_dietician(state: DietState) -> str:
-    """
-    This node is an assistant dietician that will help the user with their diet.
-    It will ask the user for their intolerances, diet, and budget. It will then give the user a list of recipes that fit their needs.
-
-    The assistant has the following tools:
-    - Intolerance_search: to search in DuckDuckGo for which foods the user is intolerant to.
-    - Diet_search: search the best diets for the user.
-    - Budget_search: search for the best recipes that fit the user's budget with the db of the supermarket.
-
-    Args:
-        state.intolerances (List[str]): list of intolerances
-        state.diet (List[str]): list of diets done by the user
-        state.budget (float): budget of the user
-
-    Returns:
-        str: supermarket shopping list
-    """
-    pass  # Placeholder for implementation
-    
-
 
 def intolerance_search(state: DietState) -> DietState:
     """
@@ -151,39 +129,19 @@ def intolerance_search(state: DietState) -> DietState:
     # Devuelve el estado actualizado
     return state
 
+"""
+PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
+"""
 
-def diet_expertise(state: DietState) -> DietState:
-    """
-    This node generates a weekly diet plan based on forbidden foods and previous diet history.
+# if __name__ == "__main__":
+#    initial_state = {
+#         'intolerances': ['gluten', 'lactosa'],
+#         'forbidden_foods': ['cebada', 'leche', 'cócteles', 'pizzas', 'masas', 'triticale', 'escanda', 'panes', 'licores de crema', 'farro', 'cereales del desayuno', 'kamut', 'bulgur', 'productos lácteos', 'espelta', 'sopas', 'productos cárnicos', 'pasta', 'rebozados', 'centeno', 'galletas', 'hamburguesas', 'salsas', 'pasteles', 'trigo'],
+#         'diet': [],
+#         'budget': 50.0,
+#         'grocery_list': [],
+#         'messages': [{'role': 'user', 'content': 'Al final si que puedo comer pan'}]
+#         }
+#    state = intolerance_search(initial_state)
+#    print(state)
 
-    Args:
-        state (DietState): Must contain 'forbidden_foods' and 'summary' (diet_summary).
-
-    Returns:
-        DietState: Updated state with the new diet plan in 'diet' field.
-    """
-
-
-    weekly_diet_prompt = prompts["weekly_diet_prompt"].format(
-        forbidden_foods=", ".join(state["forbidden_foods"]),
-        diet_summary=state["summary"]
-    )
-
-    response = model.invoke(weekly_diet_prompt)
-
-    state["diet"] = response.content
-    return state
-    
-
-if __name__ == "__main__":
-    initial_state = {
-        'intolerances': ['gluten', 'lactosa'],
-        'forbidden_foods': ['cebada', 'leche', 'cócteles', 'pizzas', 'masas', 'triticale', 'escanda', 'panes', 'licores de crema', 'farro', 'cereales del desayuno', 'kamut', 'bulgur', 'productos lácteos', 'espelta', 'sopas', 'productos cárnicos', 'pasta', 'rebozados', 'centeno', 'galletas', 'hamburguesas', 'salsas', 'pasteles', 'trigo'],
-        'diet': [],
-        'budget': 50.0,
-        'grocery_list': [],
-        'messages': [{'role': 'user', 'content': 'Al final si que puedo comer pan'}]
-        }
-
-    state = intolerance_search(initial_state)
-    print(state)

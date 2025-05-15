@@ -1,5 +1,5 @@
 from langgraph.graph import MessagesState
-from typing import Optional, List, TypedDict, Annotated
+from typing import Optional, List, TypedDict, Annotated, Dict, Tuple
 from langgraph.graph.message import add_messages
 from pydantic import BaseModel, Field
 

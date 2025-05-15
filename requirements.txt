@@ -3,8 +3,9 @@ langchain
 langchain_google_genai
 python-dotenv
 pandas
-faiss-cpu
-kagglehub
 requests
 duckduckgo-search
 spacy
+weaviate-client
+sentence-transformers
+torch

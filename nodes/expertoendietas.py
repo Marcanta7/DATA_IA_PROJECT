@@ -2,13 +2,16 @@ from langchain.tools import tool
 import weaviate
 from weaviate.classes.query import Filter
 from weaviate.classes.init import Auth
+import torch
 from sentence_transformers import SentenceTransformer
 import os
-import torch
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Conexión y modelo cargado (igual que en tu script)
-WEAVIATE_URL = os.environ["WEAVIATE_URL"]
-WEAVIATE_API_KEY = os.environ["WEAVIATE_API_KEY"]
+WEAVIATE_URL = os.getenv("WEAVIATE_URL")
+WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY")
 CLASS_NAME = "InfoDietasAplanado"
 MODEL_NAME = "intfloat/multilingual-e5-large"
 
@@ -50,3 +53,12 @@ def buscar_info_dietas(query: str, k: int = 5) -> str:
 
     except Exception as e:
         return f"❌ Error en la búsqueda: {str(e)}"
+    
+"""
+PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
+"""
+
+# if __name__ == "__main__":
+#     query="Dieta vegana"
+#     result = buscar_info_dietas(query)
+#     print(result)
