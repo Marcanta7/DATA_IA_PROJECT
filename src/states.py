@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 class DietState(MessagesState):
     intolerances: List[str] = []
     forbidden_foods: List[str] = []
-    diet: List[str] = []
+    diet: Dict[int, Dict[str, Dict[str, Tuple[float, str]]]]
     budget: Optional[float] = None
     grocery_list: List[str] = None
 

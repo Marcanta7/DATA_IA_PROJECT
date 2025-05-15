@@ -1,0 +1,14 @@
+gcloud auth login
+gcloud config set project diap3-458416
+
+gcloud functions deploy process_csvs \
+  --gen2 \
+  --runtime=python310 \
+  --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
+  --trigger-event-filters="bucket=bucket_csv_scraper" \
+  --entry-point=process_csvs \
+  --region=europe-southwest1 \
+  --source=. \
+  --env-vars-file=env.yaml \
+  --memory=1GB \
+  --timeout=540s
