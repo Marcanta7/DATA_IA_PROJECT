@@ -9,6 +9,7 @@ class DietState(MessagesState):
     diet: Dict[int, Dict[str, Dict[str, Tuple[float, str]]]]
     budget: Optional[float] = None
     grocery_list: List[str] = None
+    info_dietas: str = ""
 
 class SearchState(TypedDict):
     query: str

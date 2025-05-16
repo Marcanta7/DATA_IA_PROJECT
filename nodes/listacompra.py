@@ -17,12 +17,17 @@ def generar_lista_compra_csv(state: DietState) -> DietState:
 
     lista_compra = defaultdict(lambda: [0.0, ""])
 
-    if state.diet is None:
+    if state["diet"] is None:
         print("La dieta está vacía. No se generará la lista de compra.")
-        state.grocery_list = [] # Asegurar que grocery_list está inicializada
+        state["grocery_list"] = [] # Asegurar que grocery_list está inicializada
         return state
 
-    for dia in state.diet.values():
+    if not isinstance(state["diet"], dict) or "texto" in state["diet"]:
+        print("La dieta no tiene el formato esperado para generar la lista de la compra.")
+        state["grocery_list"] = []
+        return state
+
+    for dia in state["diet"].values():
         for comida in dia.values():
             for alimento, (cantidad, unidad) in comida.items():
                 if lista_compra[alimento][1] == "":
@@ -41,5 +46,5 @@ def generar_lista_compra_csv(state: DietState) -> DietState:
     print(f"Se ha generado el archivo {nombre_archivo_csv} con la lista de compra.")
     
     # Actualiza el estado con la lista de la compra generada
-    state.grocery_list = [f"{alimento}: {cantidad} {unidad}" for alimento, (cantidad, unidad) in lista_compra.items()]
+    state["grocery_list"] = [f"{alimento}: {cantidad} {unidad}" for alimento, (cantidad, unidad) in lista_compra.items()]
     return state

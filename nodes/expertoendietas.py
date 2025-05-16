@@ -1,4 +1,3 @@
-from langchain.tools import tool
 import weaviate
 from weaviate.classes.query import Filter
 from weaviate.classes.init import Auth
@@ -6,6 +5,8 @@ import torch
 from sentence_transformers import SentenceTransformer
 import os
 from dotenv import load_dotenv
+from states import DietState
+from langchain.tools import tool
 
 load_dotenv()
 
@@ -24,11 +25,18 @@ client = weaviate.connect_to_weaviate_cloud(
 device = "cuda" if torch.cuda.is_available() else "cpu"
 embedding_model = SentenceTransformer(MODEL_NAME, device=device)
 
-@tool
-def buscar_info_dietas(query: str, k: int = 5) -> str:
+def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
     """Busca información relevante sobre dietas, almacenada en base de Weaviate (colección InfoDietas) para consultar."""
     try:
-        # Incluir el prefijo si usas un modelo E5
+        # Asegurar que messages es una lista de dicts
+        messages = state["messages"]
+        if not isinstance(messages, list) or not messages:
+            raise ValueError("El estado no contiene mensajes válidos.")
+        last_msg = messages[-1]
+        if isinstance(last_msg, dict):
+            query = last_msg.get("content", "")
+        else:
+            query = str(last_msg)
         query_with_prefix = f"query: {query}" if "e5" in MODEL_NAME.lower() else query
         query_embedding = embedding_model.encode(query_with_prefix).tolist()
 
@@ -40,7 +48,8 @@ def buscar_info_dietas(query: str, k: int = 5) -> str:
         )
 
         if not results.objects:
-            return "No se encontró información relevante en la base de conocimiento."
+            state["info_dietas"] = "No se encontró información relevante en la base de conocimiento."
+            return state
 
         response = ""
         for obj in results.objects:
@@ -49,16 +58,39 @@ def buscar_info_dietas(query: str, k: int = 5) -> str:
             fuente = obj.properties.get("source_pdf", "unknown")
             response += f"\n📄 *{fuente}* (página {pagina}):\n{texto.strip()}\n"
 
-        return response.strip()
+        # Añade la info al estado
+        state["info_dietas"] = response.strip()
+        return state
 
     except Exception as e:
-        return f"❌ Error en la búsqueda: {str(e)}"
+        import traceback
+        tb = traceback.format_exc()
+        state["info_dietas"] = f"[ERROR] No se encontró información relevante en la base de conocimiento. Detalles: {e}\nTraceback:\n{tb}"
+        return state
+    finally:
+        try:
+            client.close()
+        except Exception:
+            pass
     
 """
 PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
 """
 
 # if __name__ == "__main__":
-#     query="Dieta vegana"
-#     result = buscar_info_dietas(query)
-#     print(result)
+#     try:
+#         state = DietState(
+#             intolerances=[],
+#             forbidden_foods=[],
+#             diet={},
+#             budget=None,
+#             grocery_list=[],
+#             messages=[{"role": "user", "content": "Dieta vegana"}]
+#         )
+#         result = buscar_info_dietas(state)
+#         print(result)
+#     finally:
+#         try:
+#             client.close()
+#         except Exception:
+#             pass
