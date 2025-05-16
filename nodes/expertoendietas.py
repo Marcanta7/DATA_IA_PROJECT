@@ -9,6 +9,10 @@ from states import DietState
 from langchain.tools import tool
 from weaviate import Client
 
+import warnings
+from pydantic.warnings import PydanticDeprecatedSince211
+warnings.filterwarnings("ignore", category=PydanticDeprecatedSince211)
+
 load_dotenv()
 
 # Conexión y modelo cargado (igual que en tu script)
