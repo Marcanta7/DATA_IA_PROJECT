@@ -1,6 +1,6 @@
 langgraph
 langchain
-langchain_google_genai
+langchain_google_genai==2.1.4
 python-dotenv
 pandas
 requests
@@ -9,4 +9,5 @@ spacy
 weaviate-client
 sentence-transformers
 torch
-csv
+https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
+weaviate-client==4.12.0
