@@ -1,2 +1,12 @@
+# Ignorar entornos virtuales
 .venv
 .env
+venv
+venv2
+
+# Ignorar todos los archivos .pyc
+*.pyc
+
+# Ignorar todas las carpetas __pycache__
+__pycache__/
+**/__pycache__/
