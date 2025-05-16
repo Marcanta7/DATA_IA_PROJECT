@@ -67,8 +67,8 @@ if __name__ == "__main__":
             continue
         # Mostrar la información relevante encontrada (si existe)
         info = state.get("info_dietas", None)
-        print("\n[DEBUG] Estado completo tras la ejecución:")
         if info:
-            print(f"\nInformación relevante encontrada:\n{info}")
+            # print(f"\nInformación relevante encontrada:\n{info}")
+            pass
         else:
             print("\n(No se encontró información relevante en esta iteración)")
