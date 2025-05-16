@@ -1,12 +1,13 @@
 langgraph
 langchain
-langchain_google_genai
+langchain_google_genai==2.1.4
 python-dotenv
 pandas
 requests
 duckduckgo-search
 spacy
+weaviate-client
+sentence-transformers
+torch
+https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
 weaviate-client==4.12.0
-sentence-transformers==4.1.0
-torch==2.7.0
-csv
