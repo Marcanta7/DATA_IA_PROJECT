@@ -47,7 +47,7 @@ def router(state: DietState) -> Dict[str, Any]:
     - "generar_dieta": Si el usuario pide una dieta, plan alimenticio o menú.
     - "lista_compra": Si el usuario solicita una lista de compra basada en la dieta.
     - "informacion": Si el usuario pide información general sobre dietas o nutrición.
-    - "chat": Para cualquier otra consulta o conversación general.
+    - "otros": Para cualquier otra consulta o conversación general que no tiene que ver con dietas.
     
     Responde solo con una de estas opciones sin explicaciones adicionales.
     """
