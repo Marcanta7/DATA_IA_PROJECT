@@ -34,7 +34,7 @@ def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
     """Busca información relevante sobre dietas, almacenada en base de Weaviate (colección InfoDietas) para consultar."""
     try:
         # Asegurar que messages es una lista de dicts
-        messages = state["messages"]
+        messages = state.messages
         if not isinstance(messages, list) or not messages:
             raise ValueError("El estado no contiene mensajes válidos.")
         last_msg = messages[-1]
@@ -53,7 +53,7 @@ def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
         )
 
         if not results.objects:
-            state["info_dietas"] = "No se encontró información relevante en la base de conocimiento."
+            state.info_dietas = "No se encontró información relevante en la base de conocimiento."
             return state
 
         response = ""
@@ -64,13 +64,16 @@ def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
             response += f"\n📄 *{fuente}* (página {pagina}):\n{texto.strip()}\n"
 
         # Añade la info al estado
-        state["info_dietas"] = response.strip()
+        state.info_dietas = response.strip()
+        # Añade la respuesta como mensaje del asistente
+        state.messages.append({"role": "assistant", "content": state.info_dietas})
         return state
 
     except Exception as e:
         import traceback
         tb = traceback.format_exc()
-        state["info_dietas"] = f"[ERROR] No se encontró información relevante en la base de conocimiento. Detalles: {e}\nTraceback:\n{tb}"
+        state.info_dietas = f"[ERROR] No se encontró información relevante en la base de conocimiento. Detalles: {e}\nTraceback:\n{tb}"
+        state.messages.append({"role": "assistant", "content": state.info_dietas})
         return state
     finally:
         try:

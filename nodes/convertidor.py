@@ -69,6 +69,6 @@ def poner_precio(state: DietState) -> DietState:
     print("✅ Se ha generado el archivo lista_compra_con_precio.csv con precios estimados.")
 
     # Opcional: almacenar el resultado en el estado si lo necesitas después
-    state['grocery_list'] = lista_df.to_dict(orient='records')
+    state.grocery_list = lista_df.to_dict(orient='records')
 
     return state
