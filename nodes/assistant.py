@@ -65,5 +65,7 @@ def router(state: DietState) -> Dict[str, Any]:
         return {"next": "experto_dietas"}
     elif "informacion" in intent or "información" in intent:
         return {"next": "experto_dietas"}
+    elif "otros" in intent:
+        return {"next": "otros"}
     else:
-        return {"next": "experto_dietas"}
+        return {"next": "otros"}
