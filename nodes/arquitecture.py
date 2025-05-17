@@ -6,6 +6,7 @@ from assistant import router
 from expertoendietas import buscar_info_dietas
 from crear_dieta import crear_dieta
 from convertidor import poner_precio
+from otros import otros
 
 
 # Definición del grafo según el diagrama
@@ -16,6 +17,7 @@ workflow.add_node("experto_dietas", buscar_info_dietas)
 workflow.add_node("hacer_lista_compra", generar_lista_compra_csv)
 workflow.add_node("crear_dieta", crear_dieta)
 workflow.add_node("poner_precio", poner_precio)
+workflow.add_node("otros", otros)
 
 # Transiciones
 workflow.set_entry_point("input_usuario")
@@ -24,13 +26,15 @@ workflow.add_conditional_edges(
     lambda x: x["next"],
     {
         "intolerancias": "intolerancias",
-        "experto_dietas": "experto_dietas"
+        "experto_dietas": "experto_dietas",
+        "otros": "otros"
     }
 )
 workflow.add_edge("intolerancias", "input_usuario")
 workflow.add_edge("experto_dietas", "crear_dieta")
 workflow.add_edge("crear_dieta", "hacer_lista_compra")
 workflow.add_edge("hacer_lista_compra","poner_precio")
+workflow.add_edge("otros", END)
 workflow.add_edge("poner_precio",END)
 
 graph = workflow.compile()
@@ -73,5 +77,5 @@ if __name__ == "__main__":
         if info:
             # print(f"\nInformación relevante encontrada:\n{info}")
             pass
-        else:
-            print("\n(No se encontró información relevante en esta iteración)")
+        #else:
+            #print("\n(No se encontró información relevante en esta iteración)")
