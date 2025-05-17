@@ -45,8 +45,6 @@ def router(state: DietState) -> Dict[str, Any]:
     Elige una de las siguientes opciones:
     - "intolerancias": Si el usuario menciona alergias, intolerancias alimentarias o restricciones dietéticas.
     - "generar_dieta": Si el usuario pide una dieta, plan alimenticio o menú.
-    - "lista_compra": Si el usuario solicita una lista de compra basada en la dieta.
-    - "informacion": Si el usuario pide información general sobre dietas o nutrición.
     - "otros": Para cualquier otra consulta o conversación general que no tiene que ver con dietas.
     
     Responde solo con una de estas opciones sin explicaciones adicionales.
@@ -60,10 +58,6 @@ def router(state: DietState) -> Dict[str, Any]:
     if "intolerancias" in intent:
         return {"next": "intolerancias"}
     elif "generar_dieta" in intent or "generar dieta" in intent or "dieta" in intent:
-        return {"next": "experto_dietas"}
-    elif "lista_compra" in intent or "lista de la compra" in intent:
-        return {"next": "experto_dietas"}
-    elif "informacion" in intent or "información" in intent:
         return {"next": "experto_dietas"}
     elif "otros" in intent:
         return {"next": "otros"}

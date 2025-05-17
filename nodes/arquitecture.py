@@ -77,5 +77,5 @@ if __name__ == "__main__":
         if info:
             # print(f"\nInformación relevante encontrada:\n{info}")
             pass
-        else:
-            print("\n(No se encontró información relevante en esta iteración)")
+        #else:
+            #print("\n(No se encontró información relevante en esta iteración)")
