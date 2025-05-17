@@ -1,15 +1,21 @@
-from langgraph.graph import MessagesState
 from typing import Optional, List, TypedDict, Annotated, Dict, Tuple
-from langgraph.graph.message import add_messages
 from pydantic import BaseModel, Field
+import operator
 
-class DietState(MessagesState):
-    intolerances: List[str] = []
-    forbidden_foods: List[str] = []
-    diet: Dict[int, Dict[str, Dict[str, Tuple[float, str]]]]
+from dataclasses import dataclass, field
+from typing import Optional, List, Dict, Tuple
+
+@dataclass
+class DietState:
+    intolerances: List[str] = field(default_factory=list)
+    forbidden_foods: List[str] = field(default_factory=list)
+    diet: Dict[str, Dict[str, Dict[str, Tuple[float, str]]]] = field(default_factory=dict)
     budget: Optional[float] = None
-    grocery_list: List[str] = None
+    grocery_list: List[str] = field(default_factory=list)
     info_dietas: str = ""
+    next: Optional[str] = None
+    messages: Annotated[List[dict], operator.add] = field(default_factory=list)
+
 
 class SearchState(TypedDict):
     query: str

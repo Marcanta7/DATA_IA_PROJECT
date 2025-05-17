@@ -24,8 +24,8 @@ def crear_dieta(state: DietState) -> DietState:
         "}\n"
         "Donde la clave principal es el día de la semana (1=lunes, 7=domingo), cada comida es un diccionario de alimentos, y cada alimento es una tupla (cantidad, unidad (solo usa g o ml como unidad)). "
         "No añadas texto ni explicaciones, solo el diccionario Python. "
-        f"Ten en cuenta estas intolerancias: {state['intolerances']}, y estos alimentos prohibidos: {state['forbidden_foods']}. "
-        f"Información adicional relevante: {state.get('info_dietas', '')}"
+        f"Ten en cuenta estas intolerancias: {state.intolerances}, y estos alimentos prohibidos: {state.forbidden_foods}. "
+        f"Información adicional relevante: {state.info_dietas}"
     )
 
     response = model.invoke(prompt)
@@ -50,9 +50,13 @@ def crear_dieta(state: DietState) -> DietState:
         dieta_dict = ast.literal_eval(dict_str)
         if not isinstance(dieta_dict, dict):
             raise ValueError("La respuesta no es un diccionario.")
-        state['diet'] = dieta_dict
+        state.diet = dieta_dict
+        # Añade la dieta como mensaje del asistente
+        resumen = "¡Aquí tienes tu dieta semanal!\n" + str(state.diet)
+        state.messages.append({"role": "assistant", "content": resumen})
     except Exception as e:
         print(f"[WARN] No se pudo convertir la dieta a dict: {e}")
-        state['diet'] = {"texto": content, "error": "La dieta generada no tiene el formato esperado."}
+        state.diet = {"texto": content, "error": "La dieta generada no tiene el formato esperado."}
+        state.messages.append({"role": "assistant", "content": "No se pudo generar la dieta correctamente."})
     
     return state
