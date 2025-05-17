@@ -7,6 +7,11 @@ import os
 from dotenv import load_dotenv
 from states import DietState
 from langchain.tools import tool
+from weaviate import Client
+
+import warnings
+from pydantic.warnings import PydanticDeprecatedSince211
+warnings.filterwarnings("ignore", category=PydanticDeprecatedSince211)
 
 load_dotenv()
 
@@ -17,9 +22,9 @@ CLASS_NAME = "InfoDietasAplanado"
 MODEL_NAME = "intfloat/multilingual-e5-large"
 
 # --- Inicialización de cliente y modelo de embeddings ---
-client = weaviate.connect_to_weaviate_cloud(
+client = weaviate.connect_to_wcs(
     cluster_url=WEAVIATE_URL,
-    auth_credentials=Auth.api_key(WEAVIATE_API_KEY),
+    auth_credentials=weaviate.auth.AuthApiKey(api_key=WEAVIATE_API_KEY),
 )
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
