@@ -22,7 +22,7 @@ def crear_dieta(state: DietState) -> DietState:
         "  ...\n"
         "  7: {...}\n"
         "}\n"
-        "Donde la clave principal es el día de la semana (1=lunes, 7=domingo), cada comida es un diccionario de alimentos, y cada alimento es una tupla (cantidad, unidad). "
+        "Donde la clave principal es el día de la semana (1=lunes, 7=domingo), cada comida es un diccionario de alimentos, y cada alimento es una tupla (cantidad, unidad (solo usa g o ml como unidad)). "
         "No añadas texto ni explicaciones, solo el diccionario Python. "
         f"Ten en cuenta estas intolerancias: {state['intolerances']}, y estos alimentos prohibidos: {state['forbidden_foods']}. "
         f"Información adicional relevante: {state.get('info_dietas', '')}"
