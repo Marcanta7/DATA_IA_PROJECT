@@ -1,897 +1,140 @@
 [
   {
-    "name": "code",
+    "name": "Nombre",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Product name in Mercadona"
   },
   {
-    "name": "lc",
+    "name": "Descripcion_del_producto",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Product description"
   },
   {
-    "name": "product_name_ca",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_de",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_en",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_es",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_fr",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_it",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_pt",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_ro",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_ru",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "product_name_xx",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "generic_name_es",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "generic_name_pt",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "quantity",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "serving_size",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "brands",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "brands_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "categories",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "categories_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "labels",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "labels_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "countries",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "countries_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "stores",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "stores_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "obsolete",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "obsolete_since_date",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "origins",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "origins_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "origin_es",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "manufacturing_places",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "manufacturing_places_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "emb_codes",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "emb_codes_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_ca",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_en",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_es",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_fr",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_it",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_pl",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_pt",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ingredients_text_ru",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "allergens",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "allergens_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "traces",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "traces_tags",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "no_nutrition_data",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "nutrition_data_per",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "nutrition_data_prepared_per",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kj_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kj_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kj_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kj_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kcal_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kcal_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kcal_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy-kcal_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fat_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fat_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fat_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fat_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "saturated-fat_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "saturated-fat_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "saturated-fat_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "saturated-fat_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "carbohydrates_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "carbohydrates_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "carbohydrates_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "carbohydrates_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sugars_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sugars_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sugars_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sugars_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fiber_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "fiber_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "proteins_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "proteins_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "proteins_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "proteins_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "salt_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "salt_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "salt_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "salt_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sodium_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sodium_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sodium_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "sodium_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "alcohol_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "alcohol_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy_prepared_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "energy_prepared_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "monounsaturated-fat_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "monounsaturated-fat_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "polyunsaturated-fat_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "polyunsaturated-fat_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "alpha-linolenic-acid_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "alpha-linolenic-acid_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "oleic-acid_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "oleic-acid_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "cholesterol_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "cholesterol_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "added-sugars_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "added-sugars_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "nucleotides_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "nucleotides_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-a_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-a_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-d_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-d_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-e_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-e_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-k_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-k_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-c_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-c_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b1_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b1_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b2_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b2_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-pp_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-pp_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b6_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b6_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b9_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b9_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b12_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "vitamin-b12_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "pantothenic-acid_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "pantothenic-acid_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "potassium_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "potassium_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "calcium_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "calcium_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "phosphorus_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "phosphorus_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "iron_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "iron_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "magnesium_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "magnesium_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "zinc_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "zinc_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "iodine_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "iodine_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "caffeine_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "caffeine_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "cocoa_value",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "cocoa_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_number_of_units",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_shape",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_material",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_recycling",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_quantity_per_unit",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_1_weight_measured",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "packaging_2_number_of_units",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "Precio",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Product price"
   },
   {
-    "name": "packaging_2_shape",
+    "name": "Imagen",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Image URL or filename"
   },
   {
-    "name": "packaging_2_material",
+    "name": "Barcode",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Product barcode"
   },
   {
-    "name": "packaging_2_recycling",
+    "name": "off_product_name",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Product name from OpenFoodFacts"
   },
   {
-    "name": "link",
+    "name": "off_barcode",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Barcode from OpenFoodFacts"
   },
   {
-    "name": "off:food_groups",
+    "name": "off_brands",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Brand information from OpenFoodFacts"
   },
   {
-    "name": "off:food_groups_tags",
+    "name": "off_quantity",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Quantity from OpenFoodFacts"
   },
   {
-    "name": "off:nova_groups",
+    "name": "nutriscore_grade",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Nutriscore grade (A-E)"
   },
   {
-    "name": "off:nova_groups_tags",
+    "name": "ecoscore_grade",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Ecoscore grade (A-E)"
   },
   {
-    "name": "off:nutriscore_grade",
+    "name": "nova_group",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "NOVA food classification group"
   },
   {
-    "name": "off:nutriscore_score",
+    "name": "ingredients_text",
     "type": "STRING",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "description": "Full ingredient list"
   },
   {
-    "name": "off:environmental_score_grade",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "energy_kcal_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Energy in kcal per 100g"
   },
   {
-    "name": "off:environmental_score_score",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "fat_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Fat in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.missing_key_data",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "saturated_fat_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Saturated fat in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.agribalyse.code",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "carbohydrates_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Carbohydrates in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.adjustments.origins_of_ingredients.value",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "sugars_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Sugars in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.adjustments.packaging.value",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "fiber_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Fiber in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.adjustments.packaging.non_recyclable_and_non_biodegradable_materials",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "proteins_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Proteins in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.adjustments.production_system.value",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "salt_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Salt in grams per 100g"
   },
   {
-    "name": "off:environmental_score_data.adjustments.threatened_species.value",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "sodium_100g",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Sodium in grams per 100g"
   },
   {
-    "name": "data_sources",
-    "type": "STRING",
-    "mode": "NULLABLE"
+    "name": "processed_at",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Timestamp when the product was processed"
   }
 ]
