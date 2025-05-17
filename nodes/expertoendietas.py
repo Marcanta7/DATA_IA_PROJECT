@@ -82,20 +82,20 @@ def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
 PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
 """
 
-# if __name__ == "__main__":
-#     try:
-#         state = DietState(
-#             intolerances=[],
-#             forbidden_foods=[],
-#             diet={},
-#             budget=None,
-#             grocery_list=[],
-#             messages=[{"role": "user", "content": "Dieta vegana"}]
-#         )
-#         result = buscar_info_dietas(state)
-#         print(result)
-#     finally:
-#         try:
-#             client.close()
-#         except Exception:
-#             pass
+if __name__ == "__main__":
+     try:
+         state = DietState(
+             intolerances=[],
+             forbidden_foods=[],
+             diet={},
+             budget=None,
+             grocery_list=[],
+             messages=[{"role": "user", "content": "Dieta vegana"}]
+         )
+         result = buscar_info_dietas(state)
+         print(result)
+     finally:
+         try:
+             client.close()
+         except Exception:
+             pass

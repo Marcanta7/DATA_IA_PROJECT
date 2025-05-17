@@ -26,14 +26,15 @@ workflow.add_conditional_edges(
     lambda x: x["next"],
     {
         "intolerancias": "intolerancias",
-        "experto_dietas": "experto_dietas"
+        "experto_dietas": "experto_dietas",
+        "otros": "otros"
     }
 )
 workflow.add_edge("intolerancias", "input_usuario")
 workflow.add_edge("experto_dietas", "crear_dieta")
 workflow.add_edge("crear_dieta", "hacer_lista_compra")
 workflow.add_edge("hacer_lista_compra","poner_precio")
-workflow.add_Edge("otros", END)
+workflow.add_edge("otros", END)
 workflow.add_edge("poner_precio",END)
 
 graph = workflow.compile()

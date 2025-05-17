@@ -133,15 +133,15 @@ def intolerance_search(state: DietState) -> DietState:
 PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
 """
 
-# if __name__ == "__main__":
-#    initial_state = {
-#         'intolerances': ['gluten', 'lactosa'],
-#         'forbidden_foods': ['cebada', 'leche', 'cócteles', 'pizzas', 'masas', 'triticale', 'escanda', 'panes', 'licores de crema', 'farro', 'cereales del desayuno', 'kamut', 'bulgur', 'productos lácteos', 'espelta', 'sopas', 'productos cárnicos', 'pasta', 'rebozados', 'centeno', 'galletas', 'hamburguesas', 'salsas', 'pasteles', 'trigo'],
-#         'diet': [],
-#         'budget': 50.0,
-#         'grocery_list': [],
-#         'messages': [{'role': 'user', 'content': 'Al final si que puedo comer pan'}]
-#         }
-#    state = intolerance_search(initial_state)
-#    print(state)
+if __name__ == "__main__":
+    initial_state = {
+         'intolerances': ['gluten', 'lactosa'],
+         'forbidden_foods': ['cebada', 'leche', 'cócteles', 'pizzas', 'masas', 'triticale', 'escanda', 'panes', 'licores de crema', 'farro', 'cereales del desayuno', 'kamut', 'bulgur', 'productos lácteos', 'espelta', 'sopas', 'productos cárnicos', 'pasta', 'rebozados', 'centeno', 'galletas', 'hamburguesas', 'salsas', 'pasteles', 'trigo'],
+         'diet': [],
+         'budget': 50.0,
+         'grocery_list': [],
+         'messages': [{'role': 'user', 'content': 'Al final si que puedo comer pan'}]
+         }
+    state = intolerance_search(initial_state)
+    print(state)
 
