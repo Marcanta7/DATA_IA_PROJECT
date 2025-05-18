@@ -1,59 +1,49 @@
-Producto,Cantidad,Unidades,Precio_Estimado,Producto_Coincidente,Unidades_Necesarias
-tostadas integrales,180.0,g,1.8,Pan tostado 100% integral,1.0
-aguacate,100.0,g,0.95,Aguacate,1.0
-tomate,30.0,g,3.54,Tomates,1.0
-bebida de almendras,400.0,ml,0.95,Bebida de avena Alitey,1.0
-lentejas,150.0,g,4.5,Navajas,1.0
-arroz integral,160.0,g,1.84,Crackers 30% integral,1.0
-ensalada mixta,250.0,g,0.88,Tomate ensalada,2.0
-aceite de oliva,35.0,ml,4.65,Aceite de oliva virgen Hacendado,1.0
-tofu a la plancha,120.0,g,1.55,Berlina al cacao,1.0
-verduras salteadas,200.0,g,,,
-quinoa,60.0,g,2.75,Quinoa Hacendado,1.0
-avena,40.0,g,0.38,Pan Viena,1.0
-frutos rojos,100.0,g,4.199999999999999,Infusion frutos rojos Hacendado,3.0
-semillas de chía,10.0,g,1.36,Semillas de chia Hacendado,1.0
-bebida de soja,400.0,ml,,,
-garbanzos,150.0,g,1.14,Rabanitos,1.0
-espinacas,200.0,g,2.3,Espinaca baby,2.0
-patata cocida,100.0,g,2.05,Patatas cocidas,1.0
-hamburguesa vegetal,100.0,g,4.0,Hamburguesa de lomo de vacuno,1.0
-pan integral,120.0,g,1.61,Pan integral trigo 100%,1.0
-ensalada de pepino y tomate,100.0,g,0.44,Tomate ensalada,1.0
-batido de plátano,100.0,g,0.5,Barra de pan,1.0
-bebida de avena,200.0,ml,0.95,Bebida de avena Alitey,1.0
-nueces,15.0,g,3.32,Aguacates,1.0
-alubias,150.0,g,1.87,Endibias,1.0
-pimientos asados,150.0,g,2.4,Pimientos asados en tiras Hacendado,1.0
-arroz,80.0,g,2.16,Puerros,1.0
-seitán a la plancha,120.0,g,3.31,Panceta oreada,1.0
-calabacín salteado,200.0,g,0.79,Calabacin verde,1.0
-cuscús,60.0,g,10.0,Super Cuquis,10.0
-hummus,40.0,g,,,
-pepino,30.0,g,0.36,Pepino,1.0
-bebida de arroz,200.0,ml,0.95,Bebida de avena Alitey,1.0
-lentejas rojas,150.0,g,2.99,Wraps Texas,1.0
-zanahoria,100.0,g,0.31,Mandarina,1.0
-cebolla,50.0,g,5.4,Cebollino,3.0
-pizza vegana,150.0,g,0.76,Pan Viena,2.0
-ensalada verde,100.0,g,0.44,Tomate ensalada,1.0
-avena nocturna,40.0,g,2.92,Avellana natural Hacendado,1.0
-leche de coco,150.0,ml,1.35,Leche de coco Hacendado,1.0
-mango,100.0,g,1.62,Mango,1.0
-coco rallado,10.0,g,1.3,Coco rallado Hacendado,1.0
-guisantes,150.0,g,3.32,Aguacates,1.0
-alcachofas,150.0,g,0.4,Alcachofa,1.0
-patata,100.0,g,0.55,Patata,1.0
-burrito vegano,200.0,g,5.3,Burger de vacuno,1.0
-salsa,30.0,g,3.1,Salsa de Trufa,1.0
-tortitas veganas,80.0,g,1.24,Espinacas cortadas,1.0
-sirope de agave,15.0,ml,,,
-fruta,200.0,g,2.49,Frambuesa,1.0
-judías verdes,150.0,g,1.45,Judia verde plana,1.0
-champiñones,100.0,g,1.54,Champiñon pequeño,1.0
-tofu,80.0,g,3.54,Tomates,1.0
-sopa de verduras,250.0,ml,,,
-mermelada sin azúcar,30.0,g,1.95,Mermelada de tomate Hacendado,1.0
-paella vegana,250.0,g,1.52,Pan Viena,4.0
-crema de calabaza,250.0,ml,1.0,Crema de calabaza Hacendado,1.0
-semillas de calabaza,10.0,g,1.36,Semillas de chia Hacendado,1.0
+Producto,Cantidad,Unidades,Precio_Unitario,Producto_Coincidente
+avena,50.0,g,0.9,Bebida de avena con caféHacendado
+leche de almendras,200.0,ml,4.0,Chocolate con leche Valor almendras enteras
+frutos rojos,100.0,g,1.66,Mix de frutos rojos Hacendado ultracongeladas
+lentejas,200.0,g,1.7,Crema de lentejas Hacendado
+arroz integral,100.0,g,1.65,Arroz integral largo Hacendado
+verduras salteadas,150.0,g,1.51,Salteado de verduras Hacendado ultracongelado
+sopa de verduras,300.0,ml,0.65,Sopa de verduras Hacendado
+pan integral,50.0,g,1.61,Pan integral trigo 100%
+aguacate,50.0,g,3.32,Aguacates
+batido de plátano,300.0,ml,1.25,Batido de chocolate Hacendado
+semillas de chía,15.0,g,1.36,Semillas de chia Hacendado
+garbanzos al curry,250.0,g,1.3,Curry Hacendado
+quinoa,100.0,g,2.75,Quinoa Hacendado
+pizza vegana,200.0,g,2.9,Pizza serrana Hacendado
+ensalada verde,100.0,g,1.25,Salsa pimienta verde Hacendado
+tostadas de aguacate,100.0,g,1.4,Galletas tostadas Hacendado
+tomate,50.0,g,0.36,Tomate canario
+aceite de oliva,5.0,ml,1.85,Filetes de melva en aceite de oliva Hacendado
+pasta integral,150.0,g,1.2,Pasta penne integral Hacendado
+salsa de tomate casera,100.0,g,1.9,Salsa de tomate Boloñesa Hacendado
+verduras asadas,100.0,g,2.9,Verduras asadas Hacendado
+burrito vegano,250.0,g,1.35,Hueso vacuno
+salsa guacamole,50.0,g,3.32,Aguacates
+cereales integrales,50.0,g,1.61,Pan integral trigo 100%
+leche de soja,200.0,ml,1.25,Salsa de Soja Hacendado
+fruta,300.0,g,2.4,Muesli Hacendado con frutas
+ensalada de quinoa,200.0,g,2.79,Ensalada queso de cabra
+nueces,30.0,g,3.9,Nuez natural Hacendado
+hamburguesa vegana,200.0,g,0.66,Berenjena
+patatas al horno,150.0,g,1.55,Patatas con allioli Hacendado
+tortitas veganas,150.0,g,1.95,Tortitas de maiz con chocolate Hacendado
+sirope de arce,30.0,ml,2.6,Sirope de agave Hacendado
+arroz con verduras,250.0,g,3.5,Arroz de verduras Hacendado
+seitán,100.0,g,3.1,Seitan Hacendado
+crema de calabaza,300.0,ml,1.7,Crema de calabacin Hacendado
+pan de centeno,50.0,g,1.47,6 Panes de centeno 51%
+yogur de coco,200.0,g,1.35,Leche de coco Hacendado
+granola,50.0,g,3.08,Repollo liso
+frutos secos,30.0,g,1.04,Palitos con frutos secos Hacendado
+pimientos rellenos de arroz,250.0,g,1.75,Aceitunas verdes rellenas de pimiento asado Hacendado
+ensalada,100.0,g,2.18,Ensalada de la casa
+tacos veganos,200.0,g,4.94,Tacos de pavo
+salsa pico de gallo,50.0,g,2.2,Caldo de pollo casero Gallina Blanca
+tostadas francesas veganas,200.0,g,2.4,Valencianas Hacendado
+paella vegana,300.0,g,1.4,Tortellini carne Pagani
+sopa de miso,250.0,ml,2.25,Sopa de miso
+edamame,100.0,g,3.32,Aguacates
+algas nori,10.0,g,2.75,Nispero
