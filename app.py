@@ -72,7 +72,7 @@ with st.sidebar:
             # Clear current messages to load from the selected session
             st.session_state.messages = []
             st.success(f"Sesión {selected_session} cargada")
-            st.experimental_rerun()
+            st.rerun()
     
     elif session_option == "Iniciar nueva sesión":
         if st.button("Crear Nueva Sesión"):
@@ -84,7 +84,7 @@ with st.sidebar:
                     st.session_state.session_id = data["session_id"]
                     st.session_state.messages = []
                     st.success(f"Nueva sesión creada: {st.session_state.session_id}")
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error(f"Error creating new session: {response.text}")
             except Exception as e:
