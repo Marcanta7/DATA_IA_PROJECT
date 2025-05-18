@@ -31,6 +31,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 embedding_model = SentenceTransformer(MODEL_NAME, device=device)
 
 def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
+    print("[NODE] experto_dietas")
     """Busca información relevante sobre dietas, almacenada en base de Weaviate (colección InfoDietas) para consultar."""
     try:
         # Asegurar que messages es una lista de dicts
@@ -66,7 +67,7 @@ def buscar_info_dietas(state: DietState, k: int = 5) -> DietState:
         # Añade la info al estado
         state.info_dietas = response.strip()
         # Añade la respuesta como mensaje del asistente
-        state.messages.append({"role": "assistant", "content": state.info_dietas})
+        # state.messages.append({"role": "assistant", "content": state.info_dietas})
         return state
 
     except Exception as e:

@@ -14,7 +14,9 @@ class DietState:
     grocery_list: List[str] = field(default_factory=list)
     info_dietas: str = ""
     next: Optional[str] = None
-    messages: Annotated[List[dict], operator.add] = field(default_factory=list)
+    next_after_intolerancias: Optional[str] = None
+    messages: Annotated[List[dict], operator.add] = field(default_factory=list)  # historial completo
+    assistant_messages: List[str] = field(default_factory=list)  # solo los mensajes assistant, siempre strings simples
 
 
 class SearchState(TypedDict):

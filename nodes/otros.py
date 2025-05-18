@@ -13,5 +13,6 @@ def otros(state: DietState) -> DietState:
         "No puedo responder preguntas fuera de este tema. "
         "¿En qué puedo ayudarte relacionado con tu alimentación?"
     )
-    state.messages.append({"role": "assistant", "content": respuesta})
+    from utils import append_message
+    append_message(state, {"role": "assistant", "content": respuesta})
     return state
