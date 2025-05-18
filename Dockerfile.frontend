@@ -1,0 +1,23 @@
+# app/Dockerfile o Dockerfile.frontend
+FROM python:3.10-slim
+
+WORKDIR /app_frontend
+
+# Copia el requirements.txt específico del frontend
+COPY ./app/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade pip -r requirements.txt
+
+# Copia todo el contenido de la carpeta 'app' al directorio de trabajo
+COPY ./app /app_frontend
+
+# Puerto que expone tu aplicación frontend (ej. Dash por defecto 8050, Streamlit 8501)
+EXPOSE 8050 
+
+# Comando para iniciar tu aplicación frontend
+# Ejemplo para una aplicación Dash (si app.py tiene `app.run_server(host='0.0.0.0')`):
+# CMD ["python", "app.py"]
+# Ejemplo para Streamlit:
+# CMD ["streamlit", "run", "app.py", "--server.port=8050", "--server.address=0.0.0.0"]
+# Si es FastAPI también:
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8050"] 
+# Asumiendo que app.py en app/ es una FastAPI app
