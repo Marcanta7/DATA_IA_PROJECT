@@ -7,6 +7,7 @@ load_dotenv()
 api_key = os.getenv('GOOGLE_API_KEY')
 
 def crear_dieta(state: DietState) -> DietState:
+    print("[NODE] crear_dieta")
     """Crea una dieta basada en las intolerancias y alimentos prohibidos."""
     model = ChatGoogleGenerativeAI(model="gemini-2.0-flash-001", api_key=api_key)
 
@@ -38,7 +39,6 @@ def crear_dieta(state: DietState) -> DietState:
     else:
         content = str(response)
 
-    print(content)
     # Intentar extraer solo el bloque de diccionario de la respuesta
     import re
     dieta_dict = None
@@ -51,12 +51,21 @@ def crear_dieta(state: DietState) -> DietState:
         if not isinstance(dieta_dict, dict):
             raise ValueError("La respuesta no es un diccionario.")
         state.diet = dieta_dict
-        # Añade la dieta como mensaje del asistente
+        # Añade la dieta como mensaje del asistente usando append_message
         resumen = "¡Aquí tienes tu dieta semanal!\n" + str(state.diet)
-        state.messages.append({"role": "assistant", "content": resumen})
+        from utils import append_message
+        append_message(state, {"role": "assistant", "content": resumen})
     except Exception as e:
         print(f"[WARN] No se pudo convertir la dieta a dict: {e}")
         state.diet = {"texto": content, "error": "La dieta generada no tiene el formato esperado."}
-        state.messages.append({"role": "assistant", "content": "No se pudo generar la dieta correctamente."})
+        # SOLO añade un mensaje de error, nunca ambos
+        from utils import append_message
+        append_message(state, {"role": "assistant", "content": "No se pudo generar la dieta correctamente."})
+        # Limita a los dos últimos mensajes assistant
+        assistant_msgs = [m for m in state.messages if m.get("role") == "assistant"]
+        print("Len assistant_msgs:", len(assistant_msgs))
+        if len(assistant_msgs) > 2:
+            keep = set(id(m) for m in assistant_msgs[-2:])
+            state.messages = [m for m in state.messages if m.get("role") != "assistant" or id(m) in keep]
     
     return state
