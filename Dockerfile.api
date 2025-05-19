@@ -1,0 +1,24 @@
+# Dockerfile.api
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Copia el archivo de requisitos. Si api.py tiene sus propias dependencias
+# diferentes al requirements.txt principal, crea un requirements.api.txt
+# y copia ese. Por ahora, asumimos que usa el principal.
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade pip -r requirements.txt
+
+# Copia el script de la API y cualquier otro módulo local que importe.
+COPY api.py .
+# Si api.py importa desde, por ejemplo, una carpeta 'utils':
+# COPY ./utils ./utils
+
+# Puerto en el que Uvicorn/FastAPI escuchará.
+EXPOSE 8000
+
+# Comando para iniciar la API.
+# Reemplaza 'api:app' donde 'api' es el nombre de tu archivo (api.py)
+# y 'app' es el nombre de la instancia de FastAPI dentro de ese archivo.
+# Ejemplo: app = FastAPI()
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]

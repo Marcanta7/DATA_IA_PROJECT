@@ -33,38 +33,38 @@ def intolerance_search(state: DietState) -> DietState:
 
     # Obtiene el último mensaje enviado por el usuario
     prompt_user = ""
-    for message in reversed(state["messages"]):
-        if message["role"] == "user":
-           prompt_user = message["content"] 
-           break
+    for message in reversed(state.messages):
+        if message.get("role") == "user" and message.get("content"):
+            prompt_user = message["content"]
+            break
 
     # Identificar y eliminar intolerancias que el usuario ya no tiene
-    intolerances_to_remove = identify_removed_intolerances(prompt_user, state['intolerances'])
+    intolerances_to_remove = identify_removed_intolerances(prompt_user, state.intolerances)
     
     # Filtra la lista de intolerancias para quitar las que ya no aplican    
-    state['intolerances'] = [
-        intolerance for intolerance in state['intolerances']
+    state.intolerances = [
+        intolerance for intolerance in state.intolerances
         if intolerance.lower() not in [item.lower() for item in intolerances_to_remove]
     ]
 
     # Prepara el prompt para extraer nuevas intolerancias del mensaje del usuario
     extraction_intolerances_prompt = prompts['extract_intolerances_prompt'].format(
         user_text=prompt_user,
-        known_intolerances=json.dumps(state['intolerances'])
+        known_intolerances=json.dumps(state.intolerances)
     )
 
     # Utiliza un modelo de IA para identificar nuevas intolerancias mencionadas por el usuario
     new_intolerances = model.with_structured_output(IntolerancesState).invoke(extraction_intolerances_prompt)
     
     # Añade las nuevas intolerancias identificadas a la lista existente
-    state['intolerances'].extend(new_intolerances['intolerances'])
+    state.intolerances.extend(new_intolerances["intolerances"])
 
     # Plantilla para construir la consulta de búsqueda en DuckDuckGo
     query_template = prompts["duckduckgo_query"]
 
     # Para cada nueva intolerancia, busca información sobre alimentos prohibidos relacionados
     with DDGS() as ddgs:
-        for intolerance in new_intolerances['intolerances']:
+        for intolerance in new_intolerances["intolerances"]:
             # Crea la consulta de búsqueda para esta intolerancia específica
             query_search = query_template.format(intolerance=intolerance)
             searchs = []
@@ -79,24 +79,24 @@ def intolerance_search(state: DietState) -> DietState:
             # Prepara el prompt para extraer alimentos prohibidos del texto obtenido
             extraction_foods_prompt = prompts['extract_forbidden_foods_prompt'].format(
                 intolerance=intolerance,
-                known_foods=json.dumps(state['forbidden_foods']), 
+                known_foods=json.dumps(state.forbidden_foods), 
                 raw_text=raw_text
             )
 
             # Utiliza el modelo para identificar alimentos prohibidos basados en la intolerancia
             new_forbidden_foods = model.with_structured_output(ForbiddenFoodsState).invoke(extraction_foods_prompt)
             # Añade los nuevos alimentos prohibidos a la lista existente
-            state['forbidden_foods'].extend(new_forbidden_foods['forbidden_foods'])
+            state.forbidden_foods.extend(new_forbidden_foods['forbidden_foods'])
 
     # Elimina duplicados de las listas de intolerancias y alimentos prohibidos
-    state['intolerances'] = list(set(state['intolerances']))
-    state['forbidden_foods'] = list(set(state['forbidden_foods']))
+    state.intolerances = list(set(state.intolerances))
+    state.forbidden_foods = list(set(state.forbidden_foods))
     
     # Detecta si el usuario ha indicado que ya no tiene ciertas intolerancias
     detect_no_longer_intolerant_prompt = prompts["detect_no_longer_intolerant_prompt"].format(
         user_text=prompt_user,
-        previous_intolerances=json.dumps(state['intolerances']),
-        forbidden_previous_foods=json.dumps(state['forbidden_foods']),
+        previous_intolerances=json.dumps(state.intolerances),
+        forbidden_previous_foods=json.dumps(state.forbidden_foods),
     )
     
     # Analiza el mensaje del usuario para identificar intolerancias o alimentos a eliminar
@@ -112,16 +112,16 @@ def intolerance_search(state: DietState) -> DietState:
     if elimination_update.eliminate:
         # Elimina intolerancias que ya no aplican
         for intolerace in elimination_update.intolerancias:
-            if intolerace in state['intolerances']:
-                state['intolerances'].remove(intolerace)
+            if intolerace in state.intolerances:
+                state.intolerances.remove(intolerace)
             else:
                 # Mensaje de depuración si no se encuentra la intolerancia en la lista
                 print(f"Intolerancia {intolerace} no encontrada en la lista de intolerancias.")
         
         # Elimina alimentos prohibidos que ya no aplican
         for food in elimination_update.alimentos:
-            if food in state['forbidden_foods']:
-                state['forbidden_foods'].remove(food)
+            if food in state.forbidden_foods:
+                state.forbidden_foods.remove(food)
             else:
                 # Mensaje de depuración si no se encuentra el alimento en la lista
                 print(f"Alimento {food} no encontrado en la lista de alimentos prohibidos.")

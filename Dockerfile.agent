@@ -1,0 +1,50 @@
+# Dockerfile.agent
+# Usa una imagen base oficial de Python ligera.
+FROM python:3.10-slim
+
+# Establece el directorio de trabajo en /app dentro del contenedor.
+WORKDIR /app
+
+# Copia el archivo de requisitos de la raíz del proyecto.
+# Asegúrate de que este requirements.txt contiene TODAS las dependencias
+# necesarias para nodes/arquitecture.py y sus módulos importados.
+COPY requirements.txt ./requirements.txt
+
+# Instala las dependencias.
+# --no-cache-dir reduce el tamaño de la imagen.
+# --upgrade pip asegura que tienes la última versión de pip.
+RUN pip install --no-cache-dir --upgrade pip -r requirements.txt
+
+# Copia el contenido de la carpeta 'nodes' al directorio /app/nodes en el contenedor.
+COPY ./nodes ./nodes
+
+# Copia el contenido de la carpeta 'src' (que contiene prompts.json y nodes.py de Langchain)
+COPY ./src ./src
+
+# Copia el contenido de la carpeta 'rag'
+COPY ./rag ./rag
+
+# Copia otros archivos necesarios en la raíz si son importados directamente por arquitecture.py
+# COPY ./tool_precios.py ./tool_precios.py # Si es necesario y no está en 'nodes'
+
+# Copia el archivo de datos precios.csv si tu aplicación lo lee desde el sistema de archivos.
+# NOTA: Para producción, es mejor cargar datos desde GCS o BigQuery,
+# pero si es un archivo pequeño y parte del despliegue, puedes incluirlo.
+COPY ./nodes/precios.csv ./nodes/precios.csv
+
+# Indica el puerto que la aplicación dentro del contenedor expondrá.
+# DEBES AJUSTARLO al puerto en el que tu aplicación Python (arquitecture.py)
+# escuchará si actúa como un servidor (ej. usando FastAPI, Flask, etc.).
+# Si arquitecture.py no es un servidor HTTP, esta línea es informativa.
+EXPOSE 8080
+
+# Comando para ejecutar tu aplicación.
+# ESTE ES EL PUNTO MÁS IMPORTANTE A AJUSTAR.
+# Si arquitecture.py es un script que inicia un servidor web (FastAPI/Flask):
+# Ejemplo con Uvicorn para FastAPI (si 'app' es tu instancia FastAPI en arquitecture.py):
+# CMD ["uvicorn", "nodes.arquitecture:app", "--host", "0.0.0.0", "--port", "8080"]
+# Si es un script que simplemente se ejecuta (quizás para un Cloud Run Job, no un Service):
+# CMD ["python", "nodes/arquitecture.py"]
+# Por el contexto de "agente de IA desplegado", asumimos que es un servicio que se mantiene en ejecución.
+# Si `nodes/arquitecture.py` contiene `if __name__ == "__main__":` para iniciar:
+CMD ["python", "-m", "nodes.arquitecture"]
