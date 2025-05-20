@@ -10,3 +10,5 @@ venv2
 # Ignorar todas las carpetas __pycache__
 __pycache__/
 **/__pycache__/
+
+diap3-458416-e2b338560b68

@@ -1,15 +1,29 @@
+# Core dependencies
 langgraph
 langchain
 langchain_google_genai==2.1.4
 python-dotenv
+flask==2.0.1
+werkzeug==2.0.1
+gunicorn==20.1.0
+
+# Data processing
 pandas
 requests
+
+# Vector search and NLP
 duckduckgo-search
 spacy
-weaviate-client
+weaviate-client==4.12.0
 sentence-transformers
 torch
 fuzzywuzzy
-https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
-weaviate-client==4.12.0
 python-Levenshtein
+
+# Google Cloud dependencies
+google-cloud-firestore
+google-cloud-bigquery
+google-cloud-secret-manager
+
+# SpaCy language model
+https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
