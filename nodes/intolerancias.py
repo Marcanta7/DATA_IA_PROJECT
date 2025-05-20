@@ -5,7 +5,7 @@ from states import DietState, IntolerancesState, ForbiddenFoodsState, Eliminatio
 from duckduckgo_search import DDGS 
 import json
 from utils import identify_removed_intolerances
-
+import logging
 
 load_dotenv()
 
@@ -13,11 +13,95 @@ api_key = os.getenv('GOOGLE_API_KEY')
 
 model = ChatGoogleGenerativeAI(model="gemini-2.0-flash-001", api_key=api_key)
 
-def load_prompt(path: str) -> dict:
-    with open(path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+# Configure logging
+logger = logging.getLogger("diet-agent-app")
 
-prompts = load_prompt("src//prompts.json")
+def load_prompt(path: str) -> dict:
+    """
+    Load prompts from JSON file with robust path handling.
+    Will try multiple paths and provide a fallback if no file is found.
+    """
+    # List of possible paths to try
+    possible_paths = [
+        path,                                    # Original path
+        path.replace('//', '/'),                 # Fix double slash
+        'src/prompts.json',                      # Root relative
+        '/app/src/prompts.json',                 # Absolute in container
+        os.path.join(os.path.dirname(__file__), '..', 'src', 'prompts.json'),  # Relative to script
+        os.path.join(os.path.dirname(__file__), 'prompts.json'),  # Same directory as script
+        'prompts.json',                          # Current directory
+    ]
+    
+    # Log attempted paths
+    logger.info(f"Looking for prompts.json in multiple locations")
+    
+    # Try each path
+    for p in possible_paths:
+        try:
+            logger.info(f"Trying to open prompts.json at: {p}")
+            with open(p, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                logger.info(f"Successfully loaded prompts from: {p}")
+                return data
+        except (FileNotFoundError, IsADirectoryError):
+            logger.info(f"File not found at: {p}")
+            continue
+        except Exception as e:
+            logger.error(f"Error loading file at {p}: {str(e)}")
+            continue
+    
+    # If we get here, none of the paths worked
+    logger.error(f"Failed to find prompts.json in any location")
+    
+    # Create minimal default prompts
+    logger.info("Creating minimal default prompts as fallback")
+    default_prompts = {
+        "extract_intolerances_prompt": """
+        Based on the user's message, extract any food intolerances they mention.
+        User text: {user_text}
+        Known intolerances: {known_intolerances}
+        """,
+        "duckduckgo_query": "foods to avoid with {intolerance} intolerance or allergy",
+        "extract_forbidden_foods_prompt": """
+        Based on the search results about {intolerance} intolerance, extract a list of foods that should be avoided.
+        Known forbidden foods: {known_foods}
+        Raw text: {raw_text}
+        """,
+        "detect_no_longer_intolerant_prompt": """
+        Analyze if the user text indicates they are no longer intolerant to certain foods.
+        User text: {user_text}
+        Previous intolerances: {previous_intolerances}
+        Previous forbidden foods: {forbidden_previous_foods}
+        """
+    }
+    return default_prompts
+
+try:
+    prompts = load_prompt("src//prompts.json")
+    logger.info("Successfully loaded prompts")
+except Exception as e:
+    logger.error(f"Error loading prompts: {str(e)}")
+    # Fallback to minimal prompts if loading fails
+    prompts = {
+        "extract_intolerances_prompt": """
+        Based on the user's message, extract any food intolerances they mention.
+        User text: {user_text}
+        Known intolerances: {known_intolerances}
+        """,
+        "duckduckgo_query": "foods to avoid with {intolerance} intolerance or allergy",
+        "extract_forbidden_foods_prompt": """
+        Based on the search results about {intolerance} intolerance, extract a list of foods that should be avoided.
+        Known forbidden foods: {known_foods}
+        Raw text: {raw_text}
+        """,
+        "detect_no_longer_intolerant_prompt": """
+        Analyze if the user text indicates they are no longer intolerant to certain foods.
+        User text: {user_text}
+        Previous intolerances: {previous_intolerances}
+        Previous forbidden foods: {forbidden_previous_foods}
+        """
+    }
+    logger.info("Using fallback prompts")
 
 def intolerance_search(state: DietState) -> DietState:
     """
@@ -144,4 +228,3 @@ PARA EL QUE LO QUIERA PROBAR QUE DESCOMENTE EL CODIGO DE ABAJO:
 #         }
 #    state = intolerance_search(initial_state)
 #    print(state)
-

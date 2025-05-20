@@ -1,50 +1,68 @@
-# Dockerfile.agent
-# Usa una imagen base oficial de Python ligera.
-FROM python:3.10-slim
+# Multi-stage build for optimized dependency installation
+FROM python:3.9-slim as builder
 
-# Establece el directorio de trabajo en /app dentro del contenedor.
+# Set up environment
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Copia el archivo de requisitos de la raíz del proyecto.
-# Asegúrate de que este requirements.txt contiene TODAS las dependencias
-# necesarias para nodes/arquitecture.py y sus módulos importados.
-COPY requirements.txt ./requirements.txt
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instala las dependencias.
-# --no-cache-dir reduce el tamaño de la imagen.
-# --upgrade pip asegura que tienes la última versión de pip.
-RUN pip install --no-cache-dir --upgrade pip -r requirements.txt
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
 
-# Copia el contenido de la carpeta 'nodes' al directorio /app/nodes en el contenedor.
-COPY ./nodes ./nodes
+# Create a virtual environment and install dependencies
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Copia el contenido de la carpeta 'src' (que contiene prompts.json y nodes.py de Langchain)
-COPY ./src ./src
+# Install dependencies in groups to better manage timeouts
+# First, install core dependencies
+RUN pip install --upgrade pip && \
+    pip install pandas requests python-dotenv werkzeug==2.0.1 flask==2.0.1 gunicorn==20.1.0
 
-# Copia el contenido de la carpeta 'rag'
-COPY ./rag ./rag
+# Then install machine learning libraries
+RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
 
-# Copia otros archivos necesarios en la raíz si son importados directamente por arquitecture.py
-# COPY ./tool_precios.py ./tool_precios.py # Si es necesario y no está en 'nodes'
+# Install NLP dependencies
+RUN pip install spacy sentence-transformers fuzzywuzzy python-Levenshtein && \
+    pip install https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl
 
-# Copia el archivo de datos precios.csv si tu aplicación lo lee desde el sistema de archivos.
-# NOTA: Para producción, es mejor cargar datos desde GCS o BigQuery,
-# pero si es un archivo pequeño y parte del despliegue, puedes incluirlo.
-COPY ./nodes/precios.csv ./nodes/precios.csv
+# Install vector DB and search dependencies
+RUN pip install weaviate-client==4.12.0 duckduckgo-search
 
-# Indica el puerto que la aplicación dentro del contenedor expondrá.
-# DEBES AJUSTARLO al puerto en el que tu aplicación Python (arquitecture.py)
-# escuchará si actúa como un servidor (ej. usando FastAPI, Flask, etc.).
-# Si arquitecture.py no es un servidor HTTP, esta línea es informativa.
-EXPOSE 8080
+# Finally install LangChain and LangGraph
+RUN pip install langgraph langchain langchain_google_genai==2.1.4
 
-# Comando para ejecutar tu aplicación.
-# ESTE ES EL PUNTO MÁS IMPORTANTE A AJUSTAR.
-# Si arquitecture.py es un script que inicia un servidor web (FastAPI/Flask):
-# Ejemplo con Uvicorn para FastAPI (si 'app' es tu instancia FastAPI en arquitecture.py):
-# CMD ["uvicorn", "nodes.arquitecture:app", "--host", "0.0.0.0", "--port", "8080"]
-# Si es un script que simplemente se ejecuta (quizás para un Cloud Run Job, no un Service):
-# CMD ["python", "nodes/arquitecture.py"]
-# Por el contexto de "agente de IA desplegado", asumimos que es un servicio que se mantiene en ejecución.
-# Si `nodes/arquitecture.py` contiene `if __name__ == "__main__":` para iniciar:
-CMD ["python", "-m", "nodes.arquitecture"]
+# Second stage: runtime image
+FROM python:3.9-slim
+
+# Set environment variables
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    PORT=8080
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy virtual environment from builder stage
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY . .
+
+# Copy .env file from nodes directory if it exists
+RUN if [ -f "nodes/.env" ]; then cp nodes/.env .env; fi
+
+# Run the application with gunicorn for production
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app

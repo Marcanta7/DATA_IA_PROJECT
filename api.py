@@ -11,6 +11,7 @@ import pickle
 import base64
 import sys
 import os
+import math
 import importlib.util
 from google.cloud import firestore
 
@@ -95,24 +96,29 @@ class MessageResponse(BaseModel):
     response: str
     state: Dict[str, Any]
 
-# FirestoreSaver implementation
+# FirestoreSaver implementation with chunking for large documents
 class FirestoreSaver:
     def __init__(self, 
-                 collection_name: str = "diet_conversations", 
-                 project_id: str = "diap3-458416",
-                 database_id: str = "agente-context-prueba"
-                ):
+                collection_name: str = "diet_conversations", 
+                project_id: str = "diap3-458416",
+                database_id: str = "agente-context-prueba",
+                max_chunk_size: int = 900000  # Leave margin below 1MB limit
+               ):
         self.collection_name = collection_name
+        self.project_id = project_id
+        self.database_id = database_id
+        self.max_chunk_size = max_chunk_size
         self.db = firestore.Client(project=project_id, database=database_id)
         self._cache = {}
         print(f"🔌 Connected to Firestore (database: {database_id}, collection: {collection_name})")
     
     def get(self, key: str) -> Optional[Dict]:
+        """Get state data from Firestore or cache, handling chunked documents"""
         # Try to get from cache first
         if key in self._cache:
             return self._cache[key]
         
-        # Try to get from Firestore
+        # Try to get the main document from Firestore
         doc_ref = self.db.collection(self.collection_name).document(key)
         doc = doc_ref.get()
         
@@ -121,26 +127,96 @@ class FirestoreSaver:
         
         data = doc.to_dict()
         
-        # Deserialize pickled data if needed
-        if "pickled_data" in data:
-            pickled_data = base64.b64decode(data["pickled_data"])
-            state = pickle.loads(pickled_data)
-        else:
-            state = data
+        # Check if the document is chunked
+        if data.get("is_chunked", False):
+            # This is a chunked document, we need to retrieve all chunks
+            print(f"Document {key} is chunked. Retrieving chunks...")
+            chunk_count = data.get("chunk_count", 0)
             
+            # Initialize the full state
+            full_state = {}
+            
+            # Add the main document data (excluding chunk metadata)
+            for k, v in data.items():
+                if k not in ["is_chunked", "chunk_count"]:
+                    full_state[k] = v
+            
+            # Retrieve and merge all chunks
+            for i in range(chunk_count):
+                chunk_key = f"{key}_chunk_{i}"
+                chunk_ref = self.db.collection(f"{self.collection_name}_chunks").document(chunk_key)
+                chunk_doc = chunk_ref.get()
+                
+                if not chunk_doc.exists:
+                    print(f"Warning: Chunk {chunk_key} is missing")
+                    continue
+                
+                chunk_data = chunk_doc.to_dict()
+                
+                # Merge chunk data into full state
+                for k, v in chunk_data.items():
+                    if k == "chunk_id":
+                        continue  # Skip metadata
+                    
+                    if k in full_state and isinstance(v, dict) and isinstance(full_state[k], dict):
+                        # Merge dictionaries
+                        full_state[k].update(v)
+                    else:
+                        # Override or add
+                        full_state[k] = v
+            
+            data = full_state
+        
+        # Check if this is a pickled chunked document
+        elif data.get("is_pickled_chunked", False):
+            print(f"Document {key} is a pickled chunked document. Reassembling...")
+            chunk_count = data.get("chunk_count", 0)
+            
+            # Collect all chunks
+            pickled_data_chunks = []
+            for i in range(chunk_count):
+                chunk_key = f"{key}_chunk_{i}"
+                chunk_ref = self.db.collection(f"{self.collection_name}_chunks").document(chunk_key)
+                chunk_doc = chunk_ref.get()
+                
+                if not chunk_doc.exists:
+                    print(f"Warning: Chunk {chunk_key} is missing")
+                    continue
+                
+                chunk_data = chunk_doc.to_dict()
+                if "pickled_data_chunk" in chunk_data:
+                    pickled_data_chunks.append(chunk_data["pickled_data_chunk"])
+            
+            # Reassemble pickled data
+            if pickled_data_chunks:
+                encoded_data = "".join(pickled_data_chunks)
+                pickled_data = base64.b64decode(encoded_data)
+                data = pickle.loads(pickled_data)
+            else:
+                print(f"Warning: No pickled data chunks found for {key}")
+                data = {"metadata": data.get("metadata", {})}
+        
+        # Deserialize pickled data if needed
+        elif "pickled_data" in data:
+            pickled_data = base64.b64decode(data["pickled_data"])
+            data = pickle.loads(pickled_data)
+        
+        # Regular document with potential diet_serialized field
+        else:
             # Restore numeric keys in diet structure
-            if "diet" in state and "diet_serialized" in state:
+            if "diet" in data and "diet_serialized" in data:
                 try:
-                    state["diet"] = json.loads(state["diet_serialized"])
-                    del state["diet_serialized"]
+                    data["diet"] = json.loads(data["diet_serialized"])
+                    del data["diet_serialized"]
                 except:
                     print("⚠️ Error deserializing diet")
         
         # Update cache
-        self._cache[key] = state
-        return state
+        self._cache[key] = data
+        return data
     
     def put(self, key: str, value: Dict) -> None:
+        """Save state data to Firestore, chunking if necessary to avoid size limits"""
         # Update cache
         self._cache[key] = value
         
@@ -164,15 +240,195 @@ class FirestoreSaver:
                 firestore_value["diet"] = {}
                 firestore_value["diet_serialized"] = "{}"
         
-        # Save to Firestore
-        doc_ref = self.db.collection(self.collection_name).document(key)
-        
+        # Prepare the data for storage
         try:
-            doc_ref.set(firestore_value)
+            # Try to estimate the document size
+            doc_size = self._estimate_document_size(firestore_value)
+            
+            if doc_size > self.max_chunk_size:
+                # Document is too large, we need to chunk it
+                print(f"Document {key} is too large ({doc_size} bytes). Chunking...")
+                self._store_chunked_document(key, firestore_value)
+            else:
+                # Document fits in one piece, store normally
+                doc_ref = self.db.collection(self.collection_name).document(key)
+                doc_ref.set(firestore_value)
         except TypeError as e:
             print(f"⚠️ Error saving to Firestore: {e}")
-            pickled_data = pickle.dumps(value)
-            encoded_data = base64.b64encode(pickled_data).decode('utf-8')
+            # Fall back to pickle encoding if needed
+            self._store_pickled_document(key, value)
+    
+    def _estimate_document_size(self, data):
+        """Roughly estimate the JSON size of a document"""
+        try:
+            # Convert to JSON and measure the byte length
+            return len(json.dumps(data).encode('utf-8'))
+        except:
+            # If we can't convert to JSON, use pickle size as a proxy
+            return len(pickle.dumps(data))
+    
+    def _store_chunked_document(self, key, data):
+        """Store a large document by splitting it into chunks"""
+        # Extract messages array, since it's likely the largest part
+        messages = data.pop("messages", [])
+        
+        # Create main document with metadata
+        main_doc = {
+            "is_chunked": True,
+            "chunk_count": 0,  # We'll update this later
+            "metadata": data.get("metadata", {
+                "created_at": datetime.datetime.now().isoformat(),
+                "last_active": datetime.datetime.now().isoformat(),
+                "session_id": key
+            })
+        }
+        
+        # Add other small fields to main document
+        for k, v in data.items():
+            if k != "metadata" and self._estimate_document_size(v) < 100000:  # Only add small fields
+                main_doc[k] = v
+        
+        # Create chunks for large data
+        chunks = []
+        current_chunk = {}
+        current_chunk_size = 0
+        chunk_fields = {}  # Fields that need to be chunked
+        
+        # Identify fields that need chunking
+        for k, v in data.items():
+            if k != "metadata" and self._estimate_document_size(v) >= 100000:
+                chunk_fields[k] = v
+        
+        # Add messages to chunk fields if they exist
+        if messages:
+            chunk_fields["messages"] = messages
+        
+        # Process all chunk fields
+        for field_name, field_data in chunk_fields.items():
+            if isinstance(field_data, list):
+                # For lists (like messages), split by items
+                items_in_current_chunk = []
+                
+                for item in field_data:
+                    item_size = self._estimate_document_size(item)
+                    
+                    if current_chunk_size + item_size > self.max_chunk_size:
+                        # This item would make the chunk too large
+                        if items_in_current_chunk:
+                            # Store current items and start a new chunk
+                            current_chunk[field_name] = items_in_current_chunk
+                            chunks.append(current_chunk)
+                            current_chunk = {}
+                            items_in_current_chunk = [item]
+                            current_chunk_size = item_size
+                        else:
+                            # Single item is too large, we need to split it somehow
+                            # For now, we'll just store it in a separate chunk
+                            chunks.append({field_name: [item]})
+                    else:
+                        # Add item to current chunk
+                        items_in_current_chunk.append(item)
+                        current_chunk_size += item_size
+                
+                # Don't forget the last chunk
+                if items_in_current_chunk:
+                    current_chunk[field_name] = items_in_current_chunk
+            
+            elif isinstance(field_data, dict):
+                # For dictionaries, split by key-value pairs
+                pairs_in_current_chunk = {}
+                
+                for k, v in field_data.items():
+                    pair_size = self._estimate_document_size({k: v})
+                    
+                    if current_chunk_size + pair_size > self.max_chunk_size:
+                        # This pair would make the chunk too large
+                        if pairs_in_current_chunk:
+                            # Store current pairs and start a new chunk
+                            current_chunk[field_name] = pairs_in_current_chunk
+                            chunks.append(current_chunk)
+                            current_chunk = {}
+                            pairs_in_current_chunk = {k: v}
+                            current_chunk_size = pair_size
+                        else:
+                            # Single pair is too large
+                            chunks.append({field_name: {k: v}})
+                    else:
+                        # Add pair to current chunk
+                        pairs_in_current_chunk[k] = v
+                        current_chunk_size += pair_size
+                
+                # Don't forget the last chunk
+                if pairs_in_current_chunk:
+                    current_chunk[field_name] = pairs_in_current_chunk
+            
+            else:
+                # For other types, store as is
+                current_chunk[field_name] = field_data
+        
+        # Add the last chunk if it's not empty
+        if current_chunk and current_chunk not in chunks:
+            chunks.append(current_chunk)
+        
+        # Update the main document with the chunk count
+        main_doc["chunk_count"] = len(chunks)
+        
+        # Store the main document
+        doc_ref = self.db.collection(self.collection_name).document(key)
+        doc_ref.set(main_doc)
+        
+        # Store each chunk
+        for i, chunk in enumerate(chunks):
+            chunk_key = f"{key}_chunk_{i}"
+            chunk_data = {"chunk_id": i, **chunk}
+            chunk_ref = self.db.collection(f"{self.collection_name}_chunks").document(chunk_key)
+            chunk_ref.set(chunk_data)
+        
+        print(f"Successfully stored document {key} in {len(chunks)} chunks")
+    
+    def _store_pickled_document(self, key, value):
+        """Store document using pickle serialization for complex objects"""
+        pickled_data = pickle.dumps(value)
+        encoded_data = base64.b64encode(pickled_data).decode('utf-8')
+        
+        # Check if even the pickled data is too large
+        if len(encoded_data) > self.max_chunk_size:
+            # We need to split the pickled data into chunks
+            total_size = len(encoded_data)
+            chunk_size = self.max_chunk_size
+            num_chunks = math.ceil(total_size / chunk_size)
+            
+            # Create main document with metadata
+            main_doc = {
+                "is_pickled_chunked": True,
+                "chunk_count": num_chunks,
+                "total_size": total_size,
+                "metadata": value.get("metadata", {
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "last_active": datetime.datetime.now().isoformat(),
+                    "session_id": key
+                })
+            }
+            
+            # Store the main document
+            doc_ref = self.db.collection(self.collection_name).document(key)
+            doc_ref.set(main_doc)
+            
+            # Store each chunk
+            for i in range(num_chunks):
+                start_idx = i * chunk_size
+                end_idx = min((i + 1) * chunk_size, total_size)
+                chunk_data = {
+                    "chunk_id": i,
+                    "pickled_data_chunk": encoded_data[start_idx:end_idx]
+                }
+                chunk_ref = self.db.collection(f"{self.collection_name}_chunks").document(f"{key}_chunk_{i}")
+                chunk_ref.set(chunk_data)
+            
+            print(f"Successfully stored pickled document {key} in {num_chunks} chunks")
+        else:
+            # Store the pickled data in a single document
+            doc_ref = self.db.collection(self.collection_name).document(key)
             doc_ref.set({"pickled_data": encoded_data})
     
     def list_sessions(self):

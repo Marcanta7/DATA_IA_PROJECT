@@ -6,9 +6,11 @@ from sentence_transformers import SentenceTransformer, util
 from google.cloud import bigquery
 import re
 import logging
+import traceback
+import os
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('convertidor')
 
 class BigQueryProductMatcher:
@@ -24,7 +26,23 @@ class BigQueryProductMatcher:
         self.table_id = table_id
         
         logger.info(f"Initializing BigQuery connection to {project_id}.{dataset_id}.{table_id}")
-        self.client = bigquery.Client(project=project_id)
+        # Try to initialize the client with explicit project and more error handling
+        try:
+            # Ensure we have the project ID in environment variables
+            os.environ['GOOGLE_CLOUD_PROJECT'] = project_id
+            
+            # Initialize BigQuery client with explicit project ID
+            self.client = bigquery.Client(project=project_id)
+            
+            # Test the connection immediately
+            self.client.list_datasets(max_results=1)
+            logger.info("✅ Successfully connected to BigQuery")
+        except Exception as e:
+            logger.error(f"❌ Failed to connect to BigQuery: {e}")
+            logger.error(f"Error details: {traceback.format_exc()}")
+            # Continue initialization, we'll check for client before queries
+            self.client = None
+        
         logger.info("Loading sentence transformer model")
         self.model = SentenceTransformer('intfloat/multilingual-e5-large')
         
@@ -32,12 +50,26 @@ class BigQueryProductMatcher:
         self.productos_embeddings = None
         self.productos = None
         
-        # Load data from BigQuery
-        self.load_data()
+        # Load data from BigQuery if client was initialized successfully
+        if self.client:
+            self.load_data()
+        else:
+            logger.error("BigQuery client initialization failed. Cannot load data.")
     
     def load_data(self) -> None:
         """Load product data from BigQuery and prepare embeddings."""
         try:
+            # First check if the table exists
+            try:
+                dataset_ref = self.client.dataset(self.dataset_id)
+                table_ref = dataset_ref.table(self.table_id)
+                self.client.get_table(table_ref)
+                logger.info(f"✅ Table {self.project_id}.{self.dataset_id}.{self.table_id} exists")
+            except Exception as e:
+                logger.error(f"❌ Table {self.project_id}.{self.dataset_id}.{self.table_id} does not exist: {e}")
+                logger.error(f"Error details: {traceback.format_exc()}")
+                return
+                
             logger.info("Executing BigQuery query to retrieve product data...")
             query = f"""
                 SELECT
@@ -49,9 +81,18 @@ class BigQueryProductMatcher:
                     `{self.project_id}.{self.dataset_id}.{self.table_id}`
                 WHERE
                     Nombre IS NOT NULL AND Precio IS NOT NULL 
+                LIMIT 1000  /* Limiting to 1000 rows for faster processing */
             """
             
-            self.precios_df = self.client.query(query).to_dataframe()
+            # Execute query with timeout (FIXED: changed timeout_ms to timeout)
+            job_config = bigquery.QueryJobConfig()
+            # Set timeout as a property (60 seconds)
+            job_config.timeout = 60  # Timeout in seconds
+            
+            query_job = self.client.query(query, job_config=job_config)
+            logger.info(f"BigQuery job {query_job.job_id} started")
+            
+            self.precios_df = query_job.to_dataframe()
             logger.info(f"Query complete. Retrieved {len(self.precios_df)} rows")
             
             if self.precios_df.empty:
@@ -78,7 +119,8 @@ class BigQueryProductMatcher:
             logger.info(f"✅ Successfully loaded {len(self.productos)} products from BigQuery")
             
         except Exception as e:
-            logger.error(f"Error loading data from BigQuery: {e}", exc_info=True)
+            logger.error(f"Error loading data from BigQuery: {e}")
+            logger.error(f"Error details: {traceback.format_exc()}")
             logger.warning("Could not load product data from BigQuery. Product matching will not work.")
     
     def buscar_producto(self, prompt_usuario: str, unidad_requerida: str = None, top_k: int = 5) -> List[Dict[str, Any]]:
@@ -124,7 +166,8 @@ class BigQueryProductMatcher:
             return resultados
             
         except Exception as e:
-            logger.error(f"Error searching for products: {e}", exc_info=True)
+            logger.error(f"Error searching for products: {e}")
+            logger.error(f"Error details: {traceback.format_exc()}")
             return []
     
     def _normalizar_unidad(self, unidad: str) -> str:
@@ -209,6 +252,7 @@ def buscar_precio_bigquery(lista_compra_row, matcher):
         
     except Exception as e:
         logger.error(f"Error al buscar precio para {lista_compra_row.get('Producto', 'unknown')}: {e}")
+        logger.error(f"Error details: {traceback.format_exc()}")
         return None, None
 
 
@@ -230,6 +274,16 @@ def poner_precio(state: DietState,
             dataset_id=dataset_id,
             table_id=table_id
         )
+        
+        # Check if the client was initialized successfully
+        if matcher.client is None:
+            logger.error("BigQuery client initialization failed. Cannot continue with price estimation.")
+            return state
+        
+        # Check if we have product data
+        if matcher.precios_df is None or matcher.productos_embeddings is None:
+            logger.error("Product data not loaded from BigQuery. Cannot continue with price estimation.")
+            return state
         
         # Check if we have a grocery list in the state
         if not state.grocery_list:
@@ -287,6 +341,7 @@ def poner_precio(state: DietState,
             logger.info("✅ Se ha generado el archivo lista_compra_con_precio.csv con precios unitarios.")
         except Exception as e:
             logger.error(f"Error saving results to CSV: {e}")
+            logger.error(f"Error details: {traceback.format_exc()}")
         
         # Update the state with the results
         state.grocery_list = result_df.to_dict(orient='records')
@@ -294,7 +349,8 @@ def poner_precio(state: DietState,
         return state
         
     except Exception as e:
-        logger.error(f"Error in poner_precio: {e}", exc_info=True)
+        logger.error(f"Error in poner_precio: {e}")
+        logger.error(f"Error details: {traceback.format_exc()}")
         # Return the original state in case of error
         return state
 
