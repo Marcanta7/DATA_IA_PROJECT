@@ -13,7 +13,7 @@ def crear_dieta(state: DietState) -> DietState:
 
     import ast
     prompt = (
-        "Genera una dieta semanal vegana en formato de diccionario de Python, con la siguiente estructura exacta:\n"
+        "Genera una dieta semanal en formato de diccionario de Python, con la siguiente estructura exacta:\n"
         "{\n"
         "  1: {\n"
         "    'desayuno': {'alimento1': (cantidad, 'unidad'), ...},\n"
