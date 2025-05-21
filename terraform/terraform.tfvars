@@ -1,5 +1,5 @@
-gcp_project_id = "diap3-458416"
-gcp_region     = "europe-west1"
+project_id = "diap3-458416"
+region     = "europe-west1"
 gcp_zone       = "europe-west1-b"
 app_name       = "ai-diet-prod" # O el nombre que prefieras
 environment    = "prod"         # O dev, staging
