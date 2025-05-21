@@ -10,14 +10,14 @@ terraform {
 }
 
 provider "google" {
-  project = var.gcp_project_id
-  region  = var.gcp_region
+  project = var.project_id
+  region  = var.region
   zone    = var.gcp_zone
 }
 
 # El proveedor google-beta a veces es necesario para recursos más nuevos
 provider "google-beta" {
-  project = var.gcp_project_id
-  region  = var.gcp_region
+  project = var.project_id
+  region  = var.region
   zone    = var.gcp_zone
 }

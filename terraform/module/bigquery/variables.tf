@@ -35,3 +35,8 @@ variable "tables" {
   }))
   default = []
 }
+
+variable "table_id" {
+  description = "ID de la tabla a crear."
+  type        = string
+}
